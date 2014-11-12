@@ -1,1 +1,1 @@
-pip install -r requirements.txt
+sudo pip install Utils/requirements.txt
