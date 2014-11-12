@@ -53,6 +53,8 @@ def get_rosters_from_url(rosters_outfile):
 			player['JERSEY'] = temp[0].contents[0].encode('utf-8')
 			player['URL'] = temp[1].contents[0]['href']
 			player['POSITION'] = temp[2].contents[0].encode('utf-8')
+			player['SUCCESS'] = False
+			player['COUNT'] = 0
 			PLAYERS.append(player)
 	print 'Finished fetching rosters.'
 	print 'Saving rosters to file...'
@@ -78,13 +80,21 @@ def get_stats_helper(in_queue, out_queue):
 	if in_queue.empty():
 		return
 	player = in_queue.get()
-	if player['POSITION'] == 'QB':
+	player['COUNT'] += 1
+	if player['POSITION'] == 'QB' or player['POSITION'] == 'RB' or player['POSITION'] == 'WR':
+		if player['POSITION'] == 'QB':
 			player = quarterback.get_stats(player)
-	elif player['POSITION'] == 'RB':
-		player = runningback.get_stats(player)
-	elif player['POSITION'] == 'WR':
-		player = widereceiver.get_stats(player)
-	out_queue.put(player)
+		elif player['POSITION'] == 'RB':
+			player = runningback.get_stats(player)
+		elif player['POSITION'] == 'WR':
+			player = widereceiver.get_stats(player)
+
+		if player['SUCCESS'] == True:
+			out_queue.put(player)
+		elif player['COUNT'] > 5:
+			print 'ERROR: Made more than 5 attempts to get data for %s' % player['URL']
+		else:
+			in_queue.put(player)
 
 def get_stats():
 	print 'Fetching NFL player stats...'
@@ -110,6 +120,8 @@ def get_stats():
 
 		while not out_queue.empty():
 			player = out_queue.get()
+			del player['SUCCESS']
+			del player['COUNT']
 			try: 
 				name = player['NAME']
 			except KeyError as e:
