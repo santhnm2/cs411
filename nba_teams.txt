@@ -1,0 +1,30 @@
+Boston Celtics|bos
+Brooklyn Nets|bkn
+New York Knicks|ny
+Philadelphia 76ers|phi
+Toronto Raptors|tor
+Chicago Bulls|chi
+Cleveland Cavaliers|cle
+Detroit Pistons|det
+Indiana Pacers|ind
+Milwaukee Bucks|mil
+Atlanta Hawks|atl
+Charlotte Hornets|cha
+Miami Heat|mia
+Orlando Magic|orl
+Washington Wizards|wsh
+Golden State Warriors|gs
+Los Angeles Clippers|lac
+Los Angeles Lakers|lal
+Phoenix Suns|phx
+Sacramento Kings|sac
+Dallas Mavericks|dal
+Houston Rockets|hou
+Memphis Grizzlies|mem
+New Orleans Pelicans|no
+San Antonio Spurs|sa
+Denver Nuggets|den
+Minnesota Timberwolves|min
+Oklahoma City Thunder|okc
+Portland Trailblazers|por
+Utah Jazz|utah
