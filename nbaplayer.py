@@ -4,11 +4,12 @@ import unirest
 from bs4 import BeautifulSoup
 
 def get_stats(player):
-	unirest.timeout(5)
+	unirest.timeout(3)
 	try:
 		response = unirest.get(player['URL']).body;
 	except Exception as e:
 		print 'ERROR: %s for url: %s' % (str(e), player['URL'])
+		player['SUCCESS'] = False
 		return player
 	soup = BeautifulSoup(response);
 
@@ -44,6 +45,6 @@ def get_stats(player):
 		player['REB'] = int(stats[10].contents[0].replace(',', ''))
 	except Exception as e:
 		player['REB'] = 0
-
+	player['SUCCESS'] = True
 	return player
 

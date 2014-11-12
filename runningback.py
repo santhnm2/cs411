@@ -9,7 +9,9 @@ def get_stats(player):
 		response = unirest.get(player['URL']).body;
 	except Exception as e:
 		print 'ERROR: %s for url: %s' % (str(e), player['URL'])
+		player['SUCCESS'] = False
 		return player
+	player['SUCCESS'] = True
 	soup = BeautifulSoup(response);
 	player['NAME'] = soup.find_all('h1')[1].contents[0].encode('utf-8')
 	results = soup.find_all('tr', {'class':'oddrow'})

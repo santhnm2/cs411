@@ -53,6 +53,7 @@ def get_rosters_from_url(rosters_outfile):
 			player['JERSEY'] = temp[0].contents[0].encode('utf-8')
 			player['URL'] = temp[1].contents[0]['href'].replace('_', 'stats/_')
 			player['POSITION'] = temp[2].contents[0].encode('utf-8')
+			player['SUCCESS'] = False
 			PLAYERS.append(player)
 	print 'Finished fetching rosters.'
 	print 'Saving rosters to file...'
@@ -79,14 +80,17 @@ def get_stats_helper(in_queue, out_queue):
 		return
 	player = in_queue.get()
 	player = nbaplayer.get_stats(player)
-	out_queue.put(player)
+	if (player['SUCCESS'] == True):
+		out_queue.put(player)
+	else:
+		in_queue.put(player)
 
 def get_stats():
 	print 'Fetching NBA player stats...'
 	stats_outfile = RUNDAY+'_nba_stats.csv'
 	csvout = open(stats_outfile, 'wb')
 
-	NUM_THREADS = 6
+	NUM_THREADS = 8
 
 	in_queue = Queue()
 	out_queue = Queue()
@@ -105,6 +109,7 @@ def get_stats():
 
 		while not out_queue.empty():
 			player = out_queue.get()
+			del player['SUCCESS']
 			try: 
 				name = player['NAME']
 			except KeyError as e:

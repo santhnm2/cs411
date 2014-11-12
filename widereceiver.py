@@ -10,6 +10,7 @@ def get_stats(player):
 	except Exception as e:
 		print 'ERROR: %s for url: %s' % (str(e), player['URL'])
 		return player
+	player['SUCCESS'] = True
 	soup = BeautifulSoup(response);
 	player['NAME'] = soup.find_all('h1')[1].contents[0].encode('utf-8')
 	results = soup.find_all('tr', {'class':'oddrow'})
