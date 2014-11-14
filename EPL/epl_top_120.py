@@ -57,7 +57,9 @@ def rank_players():
 def write_list_to_file():
 	global PLAYERS
 	myfile = open('epl_top_120_players.json', 'w+') 
-	myfile.write(json.dumps(PLAYERS))
+	for player in PLAYERS:
+		myfile.write(json.dumps(player))
+		myfile.write('\n')
 	myfile.close()
 
 def get_top_players():
