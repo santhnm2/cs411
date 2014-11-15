@@ -1,0 +1,30 @@
+body {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    height: 100%;
+}
+body:before {
+    content: "";
+    position: absolute;
+   /* background: url(../imgs/background.png);*/
+    background-size: cover;
+    z-index: -1; /* Keep the background behind the content */
+    height: 25%; width: 20%; /* Using Glen Maddern's trick /via @mente */
+
+    /* don't forget to use the prefixes you need */
+    transform: scale(5);
+    transform-origin: top left;
+  /* -webkit-filter: blur(2px);
+	-moz-filter: blur(2px);
+	-o-filter: blur(3px);
+	-ms-filter: blur(2px);
+	filter: blur(3px);*/
+}
+
+tr{
+	color: black;
+    font-weight: bold;
+}
+td{
+	color: black;
+}
