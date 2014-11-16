@@ -27,6 +27,7 @@ def get_stats_helper(in_queue, out_queue):
 		return
 	soup = BeautifulSoup(req)
 	player['NAME'] = soup.find_all('div', {'class': 'hero-name'})[0].contents[1].contents[3].contents[0].encode('utf-8')	
+	print player['NAME']
 	player['GOALS'] = int(soup.find_all('li', {'name': 'goals'})[0].contents[3].contents[0])
 	player['ASSISTS'] = int(soup.find_all('li', {'name': 'assists'})[0].contents[3].contents[0])
 	player['JERSEY'] = int(soup.find_all('div', {'class': 'hero-name'})[0].contents[1].contents[1].contents[0])
