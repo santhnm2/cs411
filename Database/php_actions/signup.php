@@ -15,6 +15,19 @@
 <?php			
 			exit;
 		}
+		$query = "SELECT * FROM NFLPlayer WHERE POSITION = 'QB' AND ASSIGNED = FALSE";
+		$result = mysqli_query($db, $query);
+		if(mysqli_num_rows($result) < 1) //WE RAN OUT OF PLAYERS!!
+		{
+?>
+			<script language="javascript" type="text/javascript">
+				alert('Sorry, we have reached the capacity for the number of users. Please join us next year!');
+				window.location = '../index.php';
+			</script>			
+<?php
+			exit;
+		}
+
 		$qer = "INSERT INTO Users (email, username, password) VALUES ('{$email}', '{$username}', '{$password}')";
 		$result = mysqli_query($db, $qer);
 
@@ -22,6 +35,34 @@
 		{
 			//Send a confirmation email to the user. Do this once
 			//mail($email, 'Welcome to Fantasy Frenzy!, 'Hello, 'From: FantasyFrenzy');
+
+			/*Get the conversion ratios*/
+			$result = mysqli_query($db, "SELECT * FROM TotalStats");
+			$result = $result->fetch_assoc();
+			$nums = [];
+			$nums [] = $result["NFLTds"];
+			$nums [] = $result["NFLYds"];
+			$nums [] = $result["EPLGoals"];
+			$nums [] = $result["EPLAssists"];
+			$nums [] = $result["NBAPoints"];
+			$nums [] = $result["NBAAssists"];
+			$nums [] = $result["NBARebounds"];
+			$min = $nums[0];
+			for($i = 0; $i < 7; $i++)
+			{
+				if($nums[$i] < $min)
+					$min = $nums[$i];
+			}
+			//Get the conversion ratios
+			$NFLTds = $min/$nums[0];
+			$NFLYds = $min/$nums[1];
+			$EPLGoals = $min/$nums[2];
+			$EPLAssists = $min/$nums[3];
+			$NBAPoints = $min/$nums[4];
+			$NBAAssists = $min/$nums[5];
+			$NBARebounds = $min/$nums[6];
+
+			/*Gets the Football Players*/
 			$players = [];
 			$qb_array = [];
 			$count = 0;
@@ -74,7 +115,7 @@
 	  			$temp = $team->fetch_assoc();
 	  			$team_name =  $temp["TEAM"];
 	  			$team_pos = $temp["POSITION"];
-	  			$sum = $temp["TD"] + $temp["YDS"];
+	  			$sum = ($NFLTds * $temp["TD"]) + ($NFLYds * $temp["YDS"]);
 	    		$quer = "INSERT INTO FantasyTeam VALUES('{$username}', '{$val}', '{$team_pos}' , '{$sum}', '{$team_name}', 'NFL')";
 	    		$res =  mysqli_query($db, $quer); 
 	    	}
@@ -108,12 +149,44 @@
 	  			$temp = $team->fetch_assoc();
 	  			$team_name =  $temp["TEAM"];
 	  			$team_pos = $temp["POSITION"];
-	  			$sum = $temp["POINTS"] + $temp["REBOUNDS"] + $temp["ASSISTS"];
+	  			$sum = $NBAPoints * $temp["POINTS"] + $NBARebounds * $temp["REBOUNDS"] + $NBAAssists * $temp["ASSISTS"];
 	    		$quer = "INSERT INTO FantasyTeam VALUES('{$username}', '{$array_temp}', '{$team_pos}', '{$sum}', '{$team_name}', 'NBA')";
 	    		$res =  mysqli_query($db, $quer); 
 	    	}
 
 
+	    	/*Add EPL Players*/
+	    	$players = [];
+			$count = 0;
+			$query = "SELECT * FROM EPLPlayer WHERE ASSIGNED = FALSE";
+			$result = mysqli_query($db, $query);
+			while ($row = $result->fetch_assoc()) {
+	        	$epl_array[] = $row["name"];
+	        	$count++;
+	    	}
+	    	$checkDif= false;
+	    	while(!$checkDif){
+	    		$firstRandom = rand(0, $count-1);
+	    		$secondRandom = rand(0,$count-1);
+	    		$thirdRandom = rand(0, $count-1);
+	    		if($firstRandom != $secondRandom && $firstRandom != $thirdRandom && $secondRandom != $thirdRandom)
+	    			$checkDif = true;
+	    	}
+	    	$players[] = $epl_array[$firstRandom];
+	    	$players[] = $epl_array[$secondRandom];
+	    	$players[] = $epl_array[$thirdRandom];
+	    	for($i = 0; $i < 3; $i++){
+	    		$array_temp = $players[$i];
+	    		$update_epl = "UPDATE EPLPlayer SET ASSIGNED = TRUE WHERE NAME = '{$array_temp}' LIMIT 1";
+	    		$update_wr_result = mysqli_query($db, $update_epl);
+	    		$team = mysqli_query($db, "SELECT * FROM EPLPlayer where NAME = '{$array_temp}' LIMIT 1");
+	  			$temp = $team->fetch_assoc();
+	  			$team_name =  $temp["sportsTeamName"];
+	  			$team_pos = $temp["position"];
+	  			$sum = $EPLGoals * $temp["goals"] + $EPLAssists * $temp["assists"];
+	    		$quer = "INSERT INTO FantasyTeam VALUES('{$username}', '{$array_temp}', '{$team_pos}', '{$sum}', '{$team_name}', 'EPL')";
+	    		$res =  mysqli_query($db, $quer); 
+	    	}
 
 	    	//time to sum up the points
 	    	$query = "SELECT SUM(athlete_points) FROM FantasyTeam WHERE username = '{$username}'";

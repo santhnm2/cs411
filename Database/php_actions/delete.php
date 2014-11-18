@@ -34,10 +34,15 @@
 					mysqli_query($db, "UPDATE NFLPlayer SET ASSIGNED=FALSE WHERE NAME='{$name}'");
 				if($count < 6)
 					mysqli_query($db, "UPDATE NBAPlayer SET ASSIGNED=FALSE WHERE NAME='{$name}'");
+				if($count < 9)
+					mysqli_query($db, "UPDATE EPLPlayer SET ASSIGNED=FALSE WHERE NAME='{$name}'");
 				$count++;
     		}
     		$deleteUser = "DELETE FROM FantasyTeam WHERE username='{$username}'";
     		$deleteTheUser = mysqli_query($db, $deleteUser);
+    		if (isset($_COOKIE["user"])) {
+            	unset($_COOKIE["user"]);
+            }
 
 ?>
 			<script language="javascript" type="text/javascript">
