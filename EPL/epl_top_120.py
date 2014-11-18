@@ -27,7 +27,7 @@ def process_request(req, param):
 			player = ALIAS[alias]
 			player[param] = res['value']
 		except KeyError as e:
-			player['NAME'] = name
+			player['SPORT'] = 'EPL'
 			player['URL'] = base_player_url + alias
 			player['TEAM'] = res['club']['clubFullName'].encode('utf-8')
 			player[param] = res['value']
@@ -58,6 +58,7 @@ def write_list_to_file():
 	global PLAYERS
 	myfile = open('epl_top_120_players.json', 'w+') 
 	for player in PLAYERS:
+		del player['TOTAL']
 		myfile.write(json.dumps(player))
 		myfile.write('\n')
 	myfile.close()
