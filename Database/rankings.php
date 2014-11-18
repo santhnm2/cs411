@@ -59,12 +59,15 @@
               <h2>Change Password<h2>
             </div>
             <form id="passwordForm" action = "php_actions/ChangePass.php" method = "post">
-              <label>Old Password&nbsp;</label>
+              <label>Old Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
               <input type="password" name="oldPassword" required>
               <br/>
               <br/>
-              <label>New Password</label>
+              <label>New Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
               <input type="password" name="newPassword" required>
+              <br/><br/>
+              <label>Confirm Password&nbsp;&nbsp;</label>
+              <input type="password" name="confirm" required>
               <div class = "modal-footer">
                 <input id = "submit" name = "submit" type = "submit" value = "Submit">
                 <button type = "button" class = "btn btn-warning" data-dismiss = "modal">Cancel</button>

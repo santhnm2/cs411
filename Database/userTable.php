@@ -1,29 +1,29 @@
 <?php require_once("php_actions/db_connect.php");?>
 <html>
-	<head>
+  <head>
         <title>Stats</title>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/formstylesheet.css">
         <link type="text/css" href ="css/table_stylesheet.css" rel="stylesheet">
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="js/userTable.js"></script>
-   	 	  <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-   	 	  <script src = "js/bootstrap.js"></script>
-	</head>
-	<body>
-		<?php
-			$cookie_name = "user";		
-			$username = $_COOKIE[$cookie_name];
-			$array = (mysqli_query($db, "SELECT * from FantasyTeam where username = '{$username}'"));
-			$retData = [];
-			while ($row = $array->fetch_assoc()) {
-				$retData[] = $row;
-	    	}
-		?>
-		<script type="text/javascript">
-			var data = JSON.parse('<?php echo json_encode($retData);?> ');
-		</script>
-	    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src = "js/bootstrap.js"></script>
+  </head>
+  <body>
+    <?php
+      $cookie_name = "user";    
+      $username = $_COOKIE[$cookie_name];
+      $array = (mysqli_query($db, "SELECT * from FantasyTeam where username = '{$username}'"));
+      $retData = [];
+      while ($row = $array->fetch_assoc()) {
+        $retData[] = $row;
+        }
+    ?>
+    <script type="text/javascript">
+      var data = JSON.parse('<?php echo json_encode($retData);?> ');
+    </script>
+      <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
           <ul class="nav navbar-nav">
               <li><a href="userTable.php">Your Account</a></li>
@@ -35,25 +35,25 @@
         </div>
       </nav>
         <div>
-			<div class="jumbotron alert-success">
-	            <h1>Welcome to your Team, <?php echo $_COOKIE["user"];?></h1>
-	    </div>	
-			<table class="table table-hover" id="mainTable">
-	            <thead>
-	                <tr>
-	                	<th>Sport</th>
-	                  <th>Player Name</th>
+      <div class="jumbotron alert-success">
+              <h1>Welcome to your team <?php echo $_COOKIE["user"];?>! </h1>
+      </div>  
+      <table class="table table-hover" id="mainTable">
+              <thead>
+                  <tr>
+                    <th>Sport</th>
+                    <th>Player Name</th>
                     <th>Player Team</th>
                     <th>Player Position</th>
-	                  <th>Total Points</th>
-	                </tr>
-	            </thead>
-	            <tbody>	
-	            </tbody>
-	        </table>
-	    </div>
+                    <th>Points <button class="list-unstyled" style="color:blue;" href = "#myModal3" data-toggle = "modal" name="singlebutton" class="btn btn-primary center-block">&nbsp;?</button></th>
+                  </tr>
+              </thead>
+              <tbody> 
+              </tbody>
+          </table>
+      </div>
 
-	 <div class = "modal fade" id = "myModal" tabindex = "-1" role = "dialog" aria-hidden = "true">
+   <div class = "modal fade" id = "myModal" tabindex = "-1" role = "dialog" aria-hidden = "true">
         <div class = "modal-dialog">
           <div class = "modal-content">
             <div class = "modal-header">
@@ -96,5 +96,21 @@
         </div>
       </div>
 
-	</body>
+      <div class = "modal" id = "myModal3">
+        <div class = "modal-dialog">
+          <div class = "modal-content">
+            <div class = "modal-header">
+              <h2>How are points calculated?<h2>
+            </div>
+            <div class = "modal-body">
+            <p>We calculate the total points of each athlete based on a normalization formula. We use the totals of each of the statistics that we track (i.e. touchdowns, yards, rebounds, assists, etc.) to make sure that each sport is represented equally. We constantly update this normalization weekly using the minimum statistic, and accordingly allocating point values to the other statistics.</p>
+            </div>
+            <div class = "modal-footer">
+              <button type = "button" class = "btn btn-primary" data-dismiss = "modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </body>
 </html>
