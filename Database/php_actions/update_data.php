@@ -61,7 +61,7 @@
 	if($result)
 	{
 		$res = mysqli_query($db, "INSERT INTO TotalStats
-								  SELECT SUM(NFLPlayer.TD) as NFLTDs, SUM(NFLPlayer.YDS) as NFLYds, (SELECT SUM(EPLPlayer.GOALS) FROM EPLPlayer) as EPLGoals, (SELECT SUM(EPLPlayer.ASSISTS) FROM EPLPlayer) as EPLAssists, (SELECT SUM(NBAPlayer.POINTS) FROM NBAPlayer) as NBAPoints, (SELECT SUM(NBAPlayer.ASSISTS) FROM NBAPlayer) as NBAAssists, (SELECT SUM(NBAPlayer.REBOUNDS) FROM NBAPlayer) as NBARebounds FROM NFLPlayer");
+								  SELECT SUM(NFLPlayer.TD) as NFLTDs, (SELECT SUM(NFLPlayer.YDS) as QBYds FROM NFLPlayer WHERE POSITION='QB'), (SELECT SUM(NFLPlayer.YDS) as WRYds FROM NFLPlayer WHERE POSITION='WR'), (SELECT SUM(NFLPlayer.YDS) as RBYds FROM NFLPlayer WHERE POSITION='RB'), (SELECT SUM(EPLPlayer.GOALS) FROM EPLPlayer) as EPLGoals, (SELECT SUM(EPLPlayer.ASSISTS) FROM EPLPlayer) as EPLAssists, (SELECT SUM(NBAPlayer.POINTS) FROM NBAPlayer) as NBAPoints, (SELECT SUM(NBAPlayer.ASSISTS) FROM NBAPlayer) as NBAAssists, (SELECT SUM(NBAPlayer.REBOUNDS) FROM NBAPlayer) as NBARebounds FROM NFLPlayer");
 	} 
 	else
 		echo "failed to update TotalStats";
@@ -71,26 +71,30 @@
 	$result = $result->fetch_assoc();
 	$nums = [];
 	$nums [] = $result["NFLTds"];
-	$nums [] = $result["NFLYds"];
+	$nums [] = $result["QBYds"];
+	$nums [] = $result["WRYds"];
+	$nums [] = $result["RBYds"];
 	$nums [] = $result["EPLGoals"];
 	$nums [] = $result["EPLAssists"];
 	$nums [] = $result["NBAPoints"];
 	$nums [] = $result["NBAAssists"];
 	$nums [] = $result["NBARebounds"];
 	$min = $nums[0];
-	for($i = 0; $i < 7; $i++)
+	for($i = 0; $i < 9; $i++)
 	{
 		if($nums[$i] < $min)
 			$min = $nums[$i];
 	}
 	//Get the conversion ratios
-	$NFLTds = $min/$nums[0];
-	$NFLYds = $min/$nums[1];
-	$EPLGoals = $min/$nums[2];
-	$EPLAssists = $min/$nums[3];
-	$NBAPoints = $min/$nums[4];
-	$NBAAssists = $min/$nums[5];
-	$NBARebounds = $min/$nums[6];
+	$NFLTds = 3*$min/$nums[0];
+	$QBYds = $min/$nums[1];
+	$WRYds = $min/$nums[2];
+	$RBYds = $min/$nums[3];
+	$EPLGoals = 3*$min/$nums[4];
+	$EPLAssists = 3*$min/$nums[5];
+	$NBAPoints = 3*$min/$nums[6];
+	$NBAAssists = 3*$min/$nums[7];
+	$NBARebounds = 3*$min/$nums[8];
 
 	$result = mysqli_query($db, "SELECT * FROM FantasyTeam");
 
@@ -100,9 +104,14 @@
     	$sport = $row["sport"];
     	$name=  $row["athlete_name"];
     	if(strcmp("NFL", $sport) == 0){
-    		$points = mysqli_query($db, "SELECT TD, YDS FROM NFLPlayer WHERE NAME = '{$name}'");
+    		$points = mysqli_query($db, "SELECT TD, YDS, POSITION FROM NFLPlayer WHERE NAME = '{$name}'");
     		$points = $points->fetch_assoc();
-    		$NFLpoints = $NFLTds * $points["TD"] + $NFLYds*$points["YDS"];
+    		if ($points['POSITION'] == 'QB')
+    			$NFLpoints = $NFLTds * $points["TD"] + $QBYds*$points["YDS"];
+    		else if ($points['POSITION'] == 'WR')
+    			$NFLpoints = $NFLTds * $points["TD"] + $WRYds*$points["YDS"];
+    		else
+    			$NFLpoints = $NFLTds * $points["TD"] + $RBYds*$points["YDS"];
     		mysqli_query($db, "UPDATE FantasyTeam SET athlete_points = '{$NFLpoints}' WHERE athlete_name = '{$name}'");
     	}
     	else if (strcmp("NBA", $sport) == 0){

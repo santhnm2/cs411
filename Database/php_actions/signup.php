@@ -41,26 +41,30 @@
 			$result = $result->fetch_assoc();
 			$nums = [];
 			$nums [] = $result["NFLTds"];
-			$nums [] = $result["NFLYds"];
+			$nums [] = $result["QBYds"];
+			$nums [] = $result["WRYds"];
+			$nums [] = $result["RBYds"];
 			$nums [] = $result["EPLGoals"];
 			$nums [] = $result["EPLAssists"];
 			$nums [] = $result["NBAPoints"];
 			$nums [] = $result["NBAAssists"];
 			$nums [] = $result["NBARebounds"];
 			$min = $nums[0];
-			for($i = 0; $i < 7; $i++)
+			for($i = 0; $i < 9; $i++)
 			{
 				if($nums[$i] < $min)
 					$min = $nums[$i];
 			}
 			//Get the conversion ratios
-			$NFLTds = $min/$nums[0];
-			$NFLYds = $min/$nums[1];
-			$EPLGoals = $min/$nums[2];
-			$EPLAssists = $min/$nums[3];
-			$NBAPoints = $min/$nums[4];
-			$NBAAssists = $min/$nums[5];
-			$NBARebounds = $min/$nums[6];
+			$NFLTds = 3*$min/$nums[0];
+			$QBYds = $min/$nums[1];
+			$WRYds = $min/$nums[2];
+			$RBYds = $min/$nums[3];
+			$EPLGoals = 3*$min/$nums[4];
+			$EPLAssists = 3*$min/$nums[5];
+			$NBAPoints = 3*$min/$nums[6];
+			$NBAAssists = 3*$min/$nums[7];
+			$NBARebounds = 3*$min/$nums[8];
 
 			/*Gets the Football Players*/
 			$players = [];
@@ -115,7 +119,12 @@
 	  			$temp = $team->fetch_assoc();
 	  			$team_name =  $temp["TEAM"];
 	  			$team_pos = $temp["POSITION"];
-	  			$sum = ($NFLTds * $temp["TD"]) + ($NFLYds * $temp["YDS"]);
+	  			if ($team_pos == 'QB')
+    				$sum = $NFLTds * $temp["TD"] + $QBYds*$temp["YDS"];
+    			else if ($team_pos == 'WR')
+    				$sum = $NFLTds * $temp["TD"] + $WRYds*$temp["YDS"];
+    			else
+    				$sum = $NFLTds * $temp["TD"] + $RBYds*$temp["YDS"];
 	    		$quer = "INSERT INTO FantasyTeam VALUES('{$username}', '{$val}', '{$team_pos}' , '{$sum}', '{$team_name}', 'NFL')";
 	    		$res =  mysqli_query($db, $quer); 
 	    	}
