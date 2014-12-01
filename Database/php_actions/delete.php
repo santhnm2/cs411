@@ -5,7 +5,8 @@
 		$cookie_name = "user";	
 		$username = $_COOKIE[$cookie_name];
 		$password = $_POST["oldPassword"];
-		$qer1 = "SELECT * FROM Users where username = '{$username}' and password = '{$password}'";
+		$hashedPass = md5($password);
+		$qer1 = "SELECT * FROM Users where username = '{$username}' and password = '{$hashedPass}'";
 		$res = mysqli_query($db, $qer1);
 		$num = mysqli_num_rows($res);
 		if($num == 0)
