@@ -15,13 +15,48 @@
       $cookie_name = "user";    
       $username = $_COOKIE[$cookie_name];
       $array = (mysqli_query($db, "SELECT * from FantasyTeam where username = '{$username}'"));
+      $retData2 = [];
+      $urlsNFL = (mysqli_query($db, "SELECT n1.URL from NFLPlayer n1, FantasyTeam f1 where n1.NAME = f1.athlete_name and f1.username = '{$username}'"));
+      $urlsNBA = (mysqli_query($db, "SELECT n1.URL from NBAPlayer n1, FantasyTeam f1 where n1.NAME = f1.athlete_name and f1.username = '{$username}'"));
+      $urlsEPL = (mysqli_query($db, "SELECT n1.URL from EPLPlayer n1, FantasyTeam f1 where n1.name = f1.athlete_name and f1.username = '{$username}'"));
+      while ($row1 = $urlsNFL->fetch_assoc()) {
+        $retData2[] = $row1;
+      }
+      while ($row1 = $urlsNBA->fetch_assoc()) {
+        $retData2[] = $row1;
+      }
+      while ($row1 = $urlsEPL->fetch_assoc()) {
+        $retData2[] = $row1;
+      }
       $retData = [];
       while ($row = $array->fetch_assoc()) {
         $retData[] = $row;
+      }
+      for($i = 0; $i < sizeof($retData);$i++){
+        if($retData[$i]['sport'] == "NFL"){
+          $athlete = $retData[$i]['athlete_name'];
+          $stats = mysqli_query($db, "SELECT YDS, TD from NFLPlayer where NAME = '{$athlete}'");
+          $stats = $stats->fetch_assoc();
+          $retData[$i]['stats'] = $stats;
         }
+        else if($retData[$i]['sport'] == "NBA"){
+          $athlete = $retData[$i]['athlete_name'];
+          $stats = mysqli_query($db, "SELECT POINTS, REBOUNDS, ASSISTS from NBAPlayer where NAME = '{$athlete}'");
+          $stats = $stats->fetch_assoc();
+          $retData[$i]['stats'] = $stats;
+        }
+        else if($retData[$i]['sport'] == "EPL"){
+          $athlete = $retData[$i]['athlete_name'];
+          $stats = mysqli_query($db, "SELECT goals, assists from EPLPlayer where NAME = '{$athlete}'");
+          $stats = $stats->fetch_assoc();
+          $retData[$i]['stats'] = $stats;
+        }
+      }
     ?>
     <script type="text/javascript">
+      console.log('<?php echo json_encode($retData);?>');
       var data = JSON.parse('<?php echo json_encode($retData);?> ');
+      var urls = JSON.parse('<?php echo json_encode($retData2);?>');
     </script>
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
@@ -46,6 +81,7 @@
                     <th>Player Team</th>
                     <th>Player Position</th>
                     <th>Points <button class="list-unstyled" style="color:blue;" href = "#myModal3" data-toggle = "modal" name="singlebutton" class="btn btn-primary center-block">&nbsp;?</button></th>
+                    <th>Stats</th>
                   </tr>
               </thead>
               <tbody> 
@@ -111,6 +147,10 @@
           </div>
         </div>
       </div>
+
+
+      
+
 
   </body>
 </html>
