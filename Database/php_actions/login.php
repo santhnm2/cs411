@@ -4,12 +4,12 @@
 	{
 		$username =  $_POST["username"];
 		$password =  $_POST["password"];
-
+		$hashedPass = md5($password);
 		$cookie_name = "user";
 		$cookie_value = $username;
 		setcookie($cookie_name, $cookie_value, time() + 3600, "/");
 
-		$qer = "SELECT * FROM Users where username = '{$username}' and password = '{$password}'";
+		$qer = "SELECT * FROM Users where username = '{$username}' and password = '{$hashedPass}'";
 		$res = mysqli_query($db, $qer);
 		$num = mysqli_num_rows($res);
 		if($num == 0)

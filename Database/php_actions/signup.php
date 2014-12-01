@@ -27,8 +27,8 @@
 <?php
 			exit;
 		}
-
-		$qer = "INSERT INTO Users (email, username, password) VALUES ('{$email}', '{$username}', '{$password}')";
+		$hashedPass = md5($password);
+		$qer = "INSERT INTO Users (email, username, password) VALUES ('{$email}', '{$username}', '{$hashedPass}')";
 		$result = mysqli_query($db, $qer);
 
 		if($result)

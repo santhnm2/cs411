@@ -5,10 +5,11 @@
 		$cookie_name = "user";		
 		$username = $_COOKIE[$cookie_name];
 		$password =  $_POST["oldPassword"];
+		$hashedPass = md5($password);
 		$new_pass = $_POST["newPassword"];
 		$confirm =  $_POST["confirm"];
 		
-		$qer1 = "SELECT * FROM Users where username = '{$username}' and password = '{$password}'";
+		$qer1 = "SELECT * FROM Users where username = '{$username}' and password = '{$hashedPass}'";
 		$res = mysqli_query($db, $qer1);
 		$num = mysqli_num_rows($res);
 		if($num == 0)
@@ -32,7 +33,8 @@
 		}
 		else
 		{
-			$qer2 = "UPDATE Users set password = '{$new_pass}' WHERE username = '{$username}'";
+			$newHashedPass = md5($new_pass);
+			$qer2 = "UPDATE Users set password = '{$newHashedPass}' WHERE username = '{$username}'";
 			$result = mysqli_query($db, $qer2);
 ?>	
 			<script language="javascript" type="text/javascript">
