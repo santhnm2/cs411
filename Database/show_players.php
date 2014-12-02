@@ -13,7 +13,7 @@
   <body>
     <?php
       $username = $_GET["players_for"];
-      $array = (mysqli_query($db, "SELECT * from FantasyTeam where username = '{$username}'"));
+      $array = (mysqli_query($db, "SELECT * from FantasyTeam where username = '{$username}' ORDER BY athlete_points DESC"));
       $retData2 = [];
       $urlsNFL = (mysqli_query($db, "SELECT n1.URL from NFLPlayer n1, FantasyTeam f1 where n1.NAME = f1.athlete_name and f1.username = '{$username}'"));
       $urlsNBA = (mysqli_query($db, "SELECT n1.URL from NBAPlayer n1, FantasyTeam f1 where n1.NAME = f1.athlete_name and f1.username = '{$username}'"));
