@@ -35,7 +35,7 @@
 		{
 			//Send a confirmation email to the user. Do this once
 			//mail($email, 'Welcome to Fantasy Frenzy!, 'Hello, 'From: FantasyFrenzy');
-
+			mail($email, 'Welcome to Fantasy Frenzy!', 'Welcome to FantasyFrenzy! We combined football, basketball, and soccer to create one unique fantasy platform.Sign up now to get your randomized team instantly and see how your players stack up amongst others in the league. Our website develops a unique conversion system across all three sports as it updates constantly based on the frequency of statistics obtained in football (NFL), basketball (NBA), and soccer (EPL). Be sure to check back in every week to see your points update!', 'From: FantasyFrenzy');
 			/*Get the conversion ratios*/
 			$result = mysqli_query($db, "SELECT * FROM TotalStats");
 			$result = $result->fetch_assoc();
