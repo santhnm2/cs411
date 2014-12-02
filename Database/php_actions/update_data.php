@@ -138,5 +138,11 @@
 		mysqli_query($db, $query);
 	}
 
-
+	//time to maile all the users
+	$result = mysqli_query($db, "SELECT email FROM Users");
+	while($row = $result->fetch_assoc())
+	{
+		$email = $row["email"];
+		mail($email, 'Update from FantasyFrenzy', 'Hello, the points for your FantasyFrenzy team have been updated. Log back into your account to see where you rank!');
+	}
 ?>
