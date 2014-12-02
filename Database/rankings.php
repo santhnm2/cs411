@@ -12,7 +12,7 @@
 	</head>
 	<body>
 	<?php
-		$array = mysqli_query($db, "SELECT * from Users ORDER BY Points DESC");
+		$array = mysqli_query($db, "SELECT username from Users ORDER BY Points DESC");
 		$retData = [];
 		while ($row = $array->fetch_assoc()) {
 			$retData[] = $row;
